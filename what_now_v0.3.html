@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<title>WHAT NOW?</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#111;color:#fff;min-height:100vh}
+.app{max-width:520px;margin:auto;min-height:100vh;padding:28px 20px 36px;display:flex;flex-direction:column}
+.logo{font-weight:900;font-size:38px;letter-spacing:-2px;margin-top:18px}.tag{color:#aaa;margin:0 0 30px;font-size:16px}
+.screen{display:none}.screen.active{display:block}.question{font-size:28px;font-weight:800;margin:20px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice,.primary,.secondary{border:0;border-radius:18px;padding:20px 14px;font-size:17px;font-weight:750;cursor:pointer}
+.choice{background:#222;color:#fff;text-align:left}.choice.selected{outline:3px solid #fff;background:#333}.emoji{font-size:27px;display:block;margin-bottom:8px}
+.primary{width:100%;background:#fff;color:#111;margin-top:20px}.secondary{width:100%;background:#222;color:#fff;margin-top:12px}
+.back{background:none;border:0;color:#aaa;font-size:15px;padding:10px 0;cursor:pointer}
+.hero{min-height:70vh;display:flex;flex-direction:column;justify-content:center;text-align:center}.hero h1{font-size:48px;letter-spacing:-3px;margin:0 0 8px}.hero p{color:#aaa;font-size:18px}.hero .primary{font-size:21px;padding:22px}
+.mission{background:#fff;color:#111;border-radius:26px;padding:28px 22px;margin-top:25px}.mission .label{font-size:13px;font-weight:900;letter-spacing:1.5px}.mission h2{font-size:29px;line-height:1.08;margin:10px 0 16px}.mission p{font-size:18px;line-height:1.5}.meta{color:#666;font-size:14px;margin-top:18px}
+.progress{height:5px;background:#292929;border-radius:9px;margin:10px 0 25px}.bar{height:100%;background:#fff;border-radius:9px;width:25%}
+.small{color:#777;text-align:center;font-size:12px;margin-top:auto;padding-top:25px}
+
+<style>
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.top>div{flex:1}.top .logo{margin-top:0}
+.iconbtn{background:#222;color:#fff;border:0;border-radius:14px;min-width:46px;height:42px;font-size:18px;cursor:pointer}
+.iconbtn span{font-size:12px;color:#aaa}
+.eyebrow,.label{font-size:12px;font-weight:900;letter-spacing:1.7px;color:#888}
+.hero p{max-width:360px;margin:0 auto 28px;line-height:1.5}
+.primary,.secondary,.choice,.listitem{transition:transform .15s ease,background .15s ease}
+.primary:active,.secondary:active,.choice:active,.listitem:active{transform:scale(.98)}
+.mission-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.mission-actions .secondary{margin-top:0}
+.challenge-card{background:#fff;color:#111;border-radius:26px;padding:28px 22px;margin-top:25px;position:relative;overflow:hidden}
+.challenge-card:after{content:'🔥';position:absolute;right:18px;top:12px;font-size:42px;opacity:.12}
+.challenge-card h2{font-size:30px;line-height:1.08;margin:10px 0 16px}
+.challenge-card p{font-size:18px;line-height:1.5}
+.code{margin-top:18px;background:#eee;border-radius:12px;padding:12px;font-weight:800;letter-spacing:1px;text-align:center}
+.list{display:grid;gap:10px;margin-top:18px}
+.listitem{border:0;background:#222;color:#fff;border-radius:16px;padding:17px;text-align:left;cursor:pointer}
+.listitem b{display:block;font-size:16px}.listitem span{display:block;color:#999;font-size:13px;margin-top:5px}
+.empty{color:#777;text-align:center;padding:35px 10px}
+</style>
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <button class="iconbtn" onclick="showSaved()" aria-label="Saved missions">♡ <span id="savedCount">0</span></button>
+    <div>
+      <div class="logo">WHAT NOW?</div>
+      <p class="tag">Stop scrolling. Start doing.</p>
+    </div>
+    <button class="iconbtn" onclick="showHistory()" aria-label="Mission history">↺</button>
+  </header>
+
+  <section id="s0" class="screen active">
+    <div class="hero">
+      <div class="eyebrow">NO PLANS? PERFECT.</div>
+      <h1>I'm bored.</h1>
+      <p>Give us a few details and we'll give you something worth doing.</p>
+      <button class="primary" onclick="startNormal()">🔥 I'M BORED</button>
+      <button class="secondary" onclick="startChallenge()">👯 CHALLENGE MY FRIENDS</button>
+    </div>
+  </section>
+
+  <section id="s1" class="screen">
+    <div class="progress"><div class="bar" style="width:25%"></div></div>
+    <div class="question">Who's with you?</div>
+    <div class="grid">
+      <button class="choice" data-group="who" onclick="pick('who','alone',this)"><span class="emoji">🙋</span>Alone</button>
+      <button class="choice" data-group="who" onclick="pick('who','friends',this)"><span class="emoji">👯</span>Friends</button>
+      <button class="choice" data-group="who" onclick="pick('who','date',this)"><span class="emoji">❤️</span>Date</button>
+      <button class="choice" data-group="who" onclick="pick('who','family',this)"><span class="emoji">👨‍👩‍👧</span>Family</button>
+    </div>
+    <button class="primary" onclick="next(2)">NEXT →</button>
+    <button class="back" onclick="next(0)">← Start over</button>
+  </section>
+
+  <section id="s2" class="screen">
+    <div class="progress"><div class="bar" style="width:50%"></div></div>
+    <div class="question">What's the budget?</div>
+    <div class="grid">
+      <button class="choice" onclick="pick('budget','0',this)"><span class="emoji">🤑</span>$0</button>
+      <button class="choice" onclick="pick('budget','10',this)"><span class="emoji">💵</span>Under $10</button>
+      <button class="choice" onclick="pick('budget','25',this)"><span class="emoji">💰</span>Under $25</button>
+      <button class="choice" onclick="pick('budget','50',this)"><span class="emoji">💳</span>$50+</button>
+    </div>
+    <button class="primary" onclick="next(3)">NEXT →</button>
+    <button class="back" onclick="next(1)">← Back</button>
+  </section>
+
+  <section id="s3" class="screen">
+    <div class="progress"><div class="bar" style="width:75%"></div></div>
+    <div class="question">How much time?</div>
+    <div class="grid">
+      <button class="choice" onclick="pick('time','15',this)"><span class="emoji">⚡</span>15 min</button>
+      <button class="choice" onclick="pick('time','30',this)"><span class="emoji">⏰</span>30 min</button>
+      <button class="choice" onclick="pick('time','60',this)"><span class="emoji">🕐</span>1 hour</button>
+      <button class="choice" onclick="pick('time','all',this)"><span class="emoji">🌎</span>All day</button>
+    </div>
+    <button class="primary" onclick="next(4)">NEXT →</button>
+    <button class="back" onclick="next(2)">← Back</button>
+  </section>
+
+  <section id="s4" class="screen">
+    <div class="progress"><div class="bar" style="width:100%"></div></div>
+    <div class="question">What's the vibe?</div>
+    <div class="grid">
+      <button class="choice" onclick="pick('mood','funny',this)"><span class="emoji">😂</span>Funny</button>
+      <button class="choice" onclick="pick('mood','competitive',this)"><span class="emoji">🎯</span>Competitive</button>
+      <button class="choice" onclick="pick('mood','random',this)"><span class="emoji">🤪</span>Random</button>
+      <button class="choice" onclick="pick('mood','adventure',this)"><span class="emoji">🧗</span>Adventure</button>
+      <button class="choice" onclick="pick('mood','chill',this)"><span class="emoji">😌</span>Chill</button>
+    </div>
+    <button class="primary" onclick="generate()">🎯 GIVE ME A MISSION</button>
+    <button class="back" onclick="next(3)">← Back</button>
+  </section>
+
+  <section id="s5" class="screen">
+    <div class="question">Your mission</div>
+    <div class="mission">
+      <div class="label">🎯 WHAT NOW?</div>
+      <h2 id="mtitle"></h2>
+      <p id="mbody"></p>
+      <div class="meta" id="mmeta"></div>
+    </div>
+    <div class="mission-actions">
+      <button class="secondary" onclick="shareMission()">↗ SHARE THIS</button>
+      <button class="secondary" onclick="toggleSavedCurrent()">♡ <span id="saveLabel">SAVE IT</span></button>
+    </div>
+    <button class="primary" onclick="complete()">✓ WE DID IT</button>
+    <button class="secondary" onclick="generate()">🔄 GIVE ME ANOTHER</button>
+    <button class="back" onclick="next(0)">← Start over</button>
+  </section>
+
+  <section id="s6" class="screen">
+    <div class="question">Challenge your friends</div>
+    <div class="challenge-card">
+      <div class="label">🔥 FRIEND CHALLENGE</div>
+      <h2 id="ctitle"></h2>
+      <p id="cbody"></p>
+      <div class="meta" id="cmeta"></div>
+      <div class="code" id="ccode"></div>
+    </div>
+    <button class="primary" onclick="shareChallenge()">↗ SEND THE CHALLENGE</button>
+    <button class="secondary" onclick="newChallenge()">🎲 NEW CHALLENGE</button>
+    <button class="back" onclick="next(0)">← Start over</button>
+  </section>
+
+  <section id="s7" class="screen">
+    <div class="question">Saved missions</div>
+    <div id="savedList" class="list"></div>
+    <button class="back" onclick="next(0)">← Back</button>
+  </section>
+
+  <section id="s8" class="screen">
+    <div class="question">Recent missions</div>
+    <div id="historyList" class="list"></div>
+    <button class="back" onclick="next(0)">← Back</button>
+  </section>
+
+  <div class="small">What Now? • v0.2</div>
+</div>
+<script>
+const state={who:null,budget:null,time:null,mood:null};
+let currentMission=null;
+let challengeMission=null;
+
+const missions=[
+ {m:'funny',b:0,t:60,w:['friends','family','alone','date'],title:'THE $0 PHOTO HUNT',body:'Find something shaped like a face, the weirdest sign, something nobody else notices, and the funniest object nearby. Take a photo of each. Everyone votes for the winner.',meta:'$0 • Up to 1 hour'},
+ {m:'competitive',b:10,t:60,w:['friends','family'],title:'THE $5 BATTLE',body:'Each person gets $5. Find the funniest thing you can buy in 15 minutes. Meet back up and vote. Winner gets bragging rights.',meta:'Up to $10 • Up to 1 hour'},
+ {m:'random',b:25,t:30,w:['alone','friends','date'],title:'RANDOM DESTINATION',body:'Pick a direction without thinking. Walk for 10 minutes. Stop at the first interesting place you see and find one thing you have never noticed before.',meta:'Under $25 • 30 minutes'},
+ {m:'adventure',b:25,t:60,w:['friends','date','family'],title:'THE MINI ADVENTURE',body:'Go somewhere nearby you have never explored. Find a viewpoint, weird landmark, new snack, or hidden photo spot. Compare results.',meta:'Under $25 • 1 hour'},
+ {m:'chill',b:0,t:60,w:['alone','friends','date','family'],title:'NO-SCROLL HOUR',body:'Put every phone on Do Not Disturb for one hour. Make snacks, choose three songs each, and take turns telling a story nobody has heard before.',meta:'$0 • 1 hour'},
+ {m:'funny',b:10,t:30,w:['friends','family','date'],title:'THE TERRIBLE COMMERCIAL',body:'Choose an ordinary object. Make a ridiculous 30-second commercial for it. Record it. Everyone votes on the best pitch.',meta:'Under $10 • 30 minutes'},
+ {m:'competitive',b:0,t:30,w:['friends','family'],title:'THE 30-MINUTE OLYMPICS',body:'Invent three safe mini-games using whatever is around you. Everyone gets points. Winner chooses the next activity.',meta:'$0 • 30 minutes'},
+ {m:'random',b:0,t:15,w:['alone','friends','date'],title:'15-MINUTE WEIRD WALK',body:'Walk for 7 minutes in a direction you normally would not take. On the way back, photograph the strangest thing you saw.',meta:'$0 • 15 minutes'},
+ {m:'adventure',b:10,t:30,w:['friends','date','family'],title:'THE THREE-STOP TOUR',body:'Pick three nearby places nobody has visited recently. Spend 10 minutes at each and rate the surprise factor.',meta:'Under $10 • 30 minutes'},
+ {m:'chill',b:10,t:30,w:['alone','friends','date'],title:'SNACK + STORY SWAP',body:'Grab one snack or make one at home. Everyone gets three minutes to tell a true story the others probably do not know.',meta:'Under $10 • 30 minutes'},
+ {m:'funny',b:0,t:15,w:['friends','family','date'],title:'BAD DRAWING SHOWDOWN',body:'Everyone gets 5 minutes to draw the same random object with their non-dominant hand. Reveal the drawings and vote.',meta:'$0 • 15 minutes'},
+ {m:'random',b:10,t:60,w:['friends','date','family'],title:'LEFT-TURN RULE',body:'Take a walk and make a left turn whenever you reach a choice point for 20 minutes. Find one memorable thing and give it a ridiculous name.',meta:'Under $10 • 1 hour'}
+];
+
+function startNormal(){next(1)}
+function startChallenge(){newChallenge();next(6)}
+function pick(k,v,el){
+ state[k]=v;
+ [...el.parentElement.children].forEach(x=>x.classList.remove('selected'));
+ el.classList.add('selected');
+}
+function next(n){
+ document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+ document.getElementById('s'+n).classList.add('active');
+ window.scrollTo(0,0);
+}
+function budgetMax(){return Number(state.budget||50)}
+function timeMax(){return state.time==='all'?999:Number(state.time||60)}
+function compatible(x){
+ return x.b<=budgetMax() && x.t<=timeMax() && (!state.who || x.w.includes(state.who)) && (!state.mood || x.m===state.mood);
+}
+function generate(){
+ let list=missions.filter(compatible);
+ if(!list.length) list=missions.filter(x=>x.b<=budgetMax() && x.t<=timeMax());
+ if(!list.length) list=missions;
+ currentMission=list[Math.floor(Math.random()*list.length)];
+ document.getElementById('mtitle').textContent=currentMission.title;
+ document.getElementById('mbody').textContent=currentMission.body;
+ document.getElementById('mmeta').textContent=currentMission.meta;
+ updateSaveLabel();
+ next(5);
+}
+function saveData(key,arr){localStorage.setItem(key,JSON.stringify(arr))}
+function getData(key){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch(e){return[]}}
+function toggleSavedCurrent(){
+ if(!currentMission)return;
+ let saved=getData('wn_saved');
+ const exists=saved.some(x=>x.title===currentMission.title);
+ saved=exists?saved.filter(x=>x.title!==currentMission.title):[currentMission,...saved].slice(0,20);
+ saveData('wn_saved',saved); updateSaveLabel(); updateCount();
+}
+function updateSaveLabel(){
+ const saved=getData('wn_saved');
+ document.getElementById('saveLabel').textContent=saved.some(x=>currentMission&&x.title===currentMission.title)?'SAVED':'SAVE IT';
+}
+function updateCount(){document.getElementById('savedCount').textContent=getData('wn_saved').length}
+function addHistory(m){let h=getData('wn_history');h=[{...m,when:new Date().toLocaleString()},...h.filter(x=>x.title!==m.title)].slice(0,20);saveData('wn_history',h)}
+function complete(){
+ if(currentMission)addHistory(currentMission);
+ updateCount();
+ alert('🔥 Mission complete! Challenge your friends or do another one.');
+ next(0);
+}
+function renderList(id,items){
+ const el=document.getElementById(id);
+ if(!items.length){el.innerHTML='<div class="empty">Nothing here yet.</div>';return}
+ el.innerHTML=items.map((x,i)=>'<button class="listitem" onclick="openSaved('+i+')"><b>'+x.title+'</b><span>'+x.meta+'</span></button>').join('');
+ window['_list_'+id]=items;
+}
+function showSaved(){renderList('savedList',getData('wn_saved'));next(7)}
+function showHistory(){renderList('historyList',getData('wn_history'));next(8)}
+function openSaved(i){
+ const item=(window._list_savedList||[])[i]||(window._list_historyList||[])[i];
+ if(!item)return;
+ currentMission=item;
+ document.getElementById('mtitle').textContent=item.title;
+ document.getElementById('mbody').textContent=item.body;
+ document.getElementById('mmeta').textContent=item.meta;
+ updateSaveLabel();next(5);
+}
+function newChallenge(){
+ const pool=missions.filter(x=>x.w.includes('friends')||x.w.includes('family')||x.m==='competitive');
+ challengeMission=pool[Math.floor(Math.random()*pool.length)];
+ const code=Math.random().toString(36).slice(2,8).toUpperCase();
+ document.getElementById('ctitle').textContent=challengeMission.title;
+ document.getElementById('cbody').textContent=challengeMission.body;
+ document.getElementById('cmeta').textContent=challengeMission.meta;
+ document.getElementById('ccode').textContent='Challenge code: '+code;
+}
+async function shareText(text){
+ if(navigator.share){try{await navigator.share({title:'WHAT NOW?',text});return}catch(e){}}
+ try{await navigator.clipboard.writeText(text);alert('Copied to your clipboard! Send it to your friends.')}catch(e){alert(text)}
+}
+function shareMission(){
+ if(!currentMission)return;
+ shareText('WHAT NOW? 🔥\\n'+currentMission.title+'\\n\\n'+currentMission.body+'\\n\\n'+currentMission.meta);
+}
+function shareChallenge(){
+ if(!challengeMission)return;
+ shareText('WHAT NOW? FRIEND CHALLENGE 🔥\\n'+challengeMission.title+'\\n\\n'+challengeMission.body+'\\n\\n'+challengeMission.meta+'\\n\\nJoin in!');
+}
+updateCount();
+</script>
+</body>
+</html>
